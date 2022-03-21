@@ -8,8 +8,15 @@ describe("Bookmarks in a collection page", () => {
   });
 
   it("cannot add bookmark to root collection", () => {
+    cy.intercept("GET", "/api/collection/root/items?**").as(
+      "fetchRootCollectionItems",
+    );
+
     cy.visit("/collection/root");
 
+    cy.wait("@fetchRootCollectionItems");
+
+    cy.findByText("View archive");
     cy.icon("bookmark").should("not.exist");
   });
 
